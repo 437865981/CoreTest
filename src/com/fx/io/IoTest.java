@@ -10,6 +10,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * 
@@ -37,7 +41,7 @@ public class IoTest {
 	 * 2.有默认编码
 	 * 3.该类中有临时缓冲区
 	 * */
-	public static void FileReaderTest(String inputPath,String outputPath){
+	public static void fileReaderTest(String inputPath,String outputPath){
 		try {
 			//1.获得文件输入流
 			FileReader fr=new FileReader(inputPath);
@@ -49,6 +53,7 @@ public class IoTest {
 				//将buf转化为字符串
 				System.out.println(new String(buf,0,len));
 			}
+			
 			
 			//====================================
 			//写出(从缓存区中获取)
@@ -64,6 +69,7 @@ public class IoTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
 	}
 	
 	
@@ -73,7 +79,7 @@ public class IoTest {
 	 * 1.有特有的方法。readLine(),读一行，读到末尾返回null
 	 * 2.BufferWriter:特定方法：newLine（）
 	 * */
-	public static void BufferReaderTest(String inputPath,String outputPath){
+	public static void bufferReaderTest(String inputPath,String outputPath){
 		try {
 			//1.获得BufferReader输入流
 			BufferedReader br=new BufferedReader(new FileReader(inputPath));
@@ -109,7 +115,7 @@ public class IoTest {
 	 * 可读取任意类型的文件
 	 * 
 	 * */
-	public static void FileInputStreamTest(String inputPath,String outputPath){
+	public static void fileInputStreamTest(String inputPath,String outputPath){
 		try {
 			FileInputStream fis=new FileInputStream(inputPath);
 			byte[] bytes=new byte[1024];
@@ -132,7 +138,7 @@ public class IoTest {
 		
 	}
 	
-	public static void BufferInputStreamTest(String inputPath,String outputPath){
+	public static void bufferInputStreamTest(String inputPath,String outputPath){
 		try {
 			BufferedInputStream fis=new BufferedInputStream(new FileInputStream(inputPath));
 			byte[] bytes=new byte[1024];
@@ -152,15 +158,47 @@ public class IoTest {
 		}
 		
 	}
+	
+	
+	/**
+	 * 字符流和字节流的桥梁
+	 * 传的参数为字符流，可以设置编码
+	 * @param inputPath
+	 * @param outputPath
+	 */
+	public static void inputStreamReaderTest(String inputPath,String outputPath){
+		try {
+			InputStreamReader isr=new InputStreamReader
+					(new FileInputStream(inputPath), "utf-8");
+			char[] buf=new char[1024];
+			//一次读完，（注意用if）
+			if((isr.read(buf))!=0){
+				System.out.println(new String(buf,0,buf.length));
+			}
+			
+			//写出
+			OutputStreamWriter osw=new OutputStreamWriter(new FileOutputStream(outputPath));
+			osw.write("hello");
+			osw.write(buf);
+			
+			osw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args) {
 		//字符测试
-		//BufferReaderTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\BufferWriter.txt");
-		//FileReaderTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\FileWriter.txt");
+		//bufferReaderTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\BufferWriter.txt");
+		//fileReaderTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\FileWriter.txt");
 		
 		
 		//字节测试
-		//FileInputStreamTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\FileInputStream.txt");
-		BufferInputStreamTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\bufferInputStream.txt");
+		//fileInputStreamTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\FileInputStream.txt");
+		//bufferInputStreamTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\bufferInputStream.txt");
+		
+		//转换流
+		inputStreamReaderTest("E:\\Program Files\\apache-maven-3.3.9\\README.txt","E:\\Program Files\\apache-maven-3.3.9\\InputStreamReader.txt");
 	}
 
 }
